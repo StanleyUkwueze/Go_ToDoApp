@@ -27,5 +27,11 @@ func main() {
 	r.PUT("/done/:id", controllers.CompleteTask)
 
 	r.GET("completed", controllers.FetchAllCompletedTasks)
+
+	//User methods
+
+	r.POST("signup", controllers.SignUp)
+	r.POST("login", controllers.Login)
+
 	r.Run()
 }
