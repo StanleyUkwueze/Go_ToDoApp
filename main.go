@@ -3,6 +3,7 @@ package main
 import (
 	"todo/controllers"
 	"todo/initializers"
+	"todo/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -32,6 +33,7 @@ func main() {
 
 	r.POST("signup", controllers.SignUp)
 	r.POST("login", controllers.Login)
+	r.GET("validate", middleware.RequireAuth, controllers.Validate)
 
 	r.Run()
 }

@@ -95,8 +95,8 @@ func Login(c *gin.Context) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"Sub": user.ID,
-		"Exp": time.Now().Add(time.Hour * 24 * 30).Unix(),
+		"sub": user.ID,
+		"exp": time.Now().Add(time.Hour * 24 * 30).Unix(),
 	})
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))
 
@@ -107,7 +107,14 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	c.Copy().SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie("Authorization", tokenString, 360*24*30, "", "", false, true)
+
+	c.JSON(http.StatusOK, gin.H{})
+}
+
+func Validate(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
-		"Token": tokenString,
+		"Message": "I'm Logged in now",
 	})
 }
