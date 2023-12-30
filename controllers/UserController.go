@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 	"os"
+	"strings"
 	"time"
 	"todo/initializers"
 	"todo/models"
@@ -95,8 +96,9 @@ func Login(c *gin.Context) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub": user.ID,
-		"exp": time.Now().Add(time.Hour * 24 * 30).Unix(),
+		"sub":      user.ID,
+		"exp":      time.Now().Add(time.Hour * 24 * 30).Unix(),
+		"Username": user.Email,
 	})
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))
 
@@ -114,7 +116,26 @@ func Login(c *gin.Context) {
 }
 
 func Validate(c *gin.Context) {
+
+	user, _ := c.Get("user")
 	c.JSON(http.StatusOK, gin.H{
-		"Message": "I'm Logged in now",
+		"user": user,
+	})
+}
+func GetTokenFromRequest(c *gin.Context) { //for testing
+
+	bearerToken, _ := c.Cookie("Authorization")
+	splitToken := strings.Split(bearerToken, ".")
+
+	if len(splitToken) > 1 {
+		c.JSON(200, gin.H{
+			"Message": "Splited",
+			"Token":   splitToken[1],
+		})
+		return
+	}
+	c.JSON(200, gin.H{
+		"Message": "one length",
+		"Token":   bearerToken,
 	})
 }

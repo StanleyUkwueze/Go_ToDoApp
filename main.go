@@ -35,5 +35,7 @@ func main() {
 	r.POST("login", controllers.Login)
 	r.GET("validate", middleware.RequireAuth, controllers.Validate)
 
+	r.GET("getToken", controllers.GetTokenFromRequest)
+
 	r.Run()
 }
