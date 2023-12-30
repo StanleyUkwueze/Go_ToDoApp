@@ -15,17 +15,17 @@ func init() {
 func main() {
 	r := gin.Default()
 
-	r.POST("/create", controllers.AddTask)
+	r.POST("/create", middleware.RequireAuth, controllers.AddTask)
 
 	r.GET("/fetch", controllers.FetchAllTasks)
 
 	r.GET("/get/:id", controllers.FetchTaskById)
 
-	r.PUT("/update/:id", controllers.UpdateTask)
+	r.PUT("/update/:id", middleware.RequireAuth, controllers.UpdateTask)
 
-	r.DELETE("/delete/:id", controllers.Delete)
+	r.DELETE("/delete/:id", middleware.RequireAuth, controllers.Delete)
 
-	r.PUT("/done/:id", controllers.CompleteTask)
+	r.PUT("/done/:id", middleware.RequireAuth, controllers.CompleteTask)
 
 	r.GET("completed", controllers.FetchAllCompletedTasks)
 
