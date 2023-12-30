@@ -16,7 +16,14 @@ func AddTask(c *gin.Context) {
 
 	c.Bind(&task)
 
-	taskToAdd := models.TaskModel{Title: task.Title, IsCompleted: task.IsCompleted}
+	user, _ := c.Get("user")
+	userId := user.(models.User).ID
+	if uint(userId) == 0 {
+		c.JSON(500, gin.H{
+			"message": "No logged in user found",
+		})
+	}
+	taskToAdd := models.TaskModel{Title: task.Title, IsCompleted: task.IsCompleted, UserId: userId}
 
 	response := initializers.DB.Create(&taskToAdd)
 
@@ -32,7 +39,6 @@ func AddTask(c *gin.Context) {
 
 func FetchAllTasks(c *gin.Context) {
 	var tasks []models.TaskModel
-
 	initializers.DB.Find(&tasks)
 
 	c.JSON(200, gin.H{
@@ -122,5 +128,18 @@ func FetchAllCompletedTasks(c *gin.Context) {
 
 	c.JSON(200, gin.H{
 		"tasks": tasks,
+	})
+}
+
+func GetUserTasks(c *gin.Context) {
+	var tasks []models.TaskModel
+
+	user, _ := c.Get("user")
+	userId := user.(models.User).ID
+	initializers.DB.Where(&models.TaskModel{UserId: userId}).Find(&tasks)
+
+	c.JSON(200, gin.H{
+		"Message": "User's tasks fetched successfully",
+		"MyTasks": tasks,
 	})
 }

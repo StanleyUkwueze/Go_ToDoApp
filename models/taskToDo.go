@@ -6,4 +6,5 @@ type TaskModel struct {
 	gorm.Model
 	Title       string
 	IsCompleted bool
+	UserId      uint
 }

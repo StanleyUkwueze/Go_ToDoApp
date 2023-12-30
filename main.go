@@ -29,13 +29,15 @@ func main() {
 
 	r.GET("completed", controllers.FetchAllCompletedTasks)
 
-	//User methods
-
+	//User Auth methods
 	r.POST("signup", controllers.SignUp)
 	r.POST("login", controllers.Login)
 	r.GET("validate", middleware.RequireAuth, controllers.Validate)
-
 	r.GET("getToken", controllers.GetTokenFromRequest)
+
+	//User fetches
+	r.GET("users", controllers.GetAllUsers)
+	r.GET("mytasks", middleware.RequireAuth, controllers.GetUserTasks)
 
 	r.Run()
 }

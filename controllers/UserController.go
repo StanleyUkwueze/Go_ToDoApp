@@ -118,10 +118,22 @@ func Login(c *gin.Context) {
 func Validate(c *gin.Context) {
 
 	user, _ := c.Get("user")
+
 	c.JSON(http.StatusOK, gin.H{
 		"user": user,
 	})
 }
+
+func GetAllUsers(db *gin.Context) {
+	var users []models.User
+	initializers.DB.Preload("Tasks").Find(&users)
+
+	db.JSON(200, gin.H{
+		"Message": "Users fetched successfully",
+		"users":   users,
+	})
+}
+
 func GetTokenFromRequest(c *gin.Context) { //for testing
 
 	bearerToken, _ := c.Cookie("Authorization")
